@@ -65,7 +65,7 @@ echo comparing files against index
 echo file errors begins > file_errors.txt
 while read -r LINE
 do
-	LINE="$(echo $LINE | sed 's/\r//g')"
+	LINE=$(echo $LINE | tr -d '\r')
 	FULL_NAME="$(echo $LINE | sed -E 's/\/(.*\/?.*),[0-9]+/\1/')"
 	FILE_PATH="$(echo $FULL_NAME | sed -E 's/(.*)\/.*/\1/')"
 	FILE_NAME="$(echo $FULL_NAME | sed -E 's/.*\/(.*)/\1/')"
@@ -107,8 +107,8 @@ do
 	if [ -f "$FULL_OUTPUT_PATH" ]
 	then
 		$VERBOSE && echo "$FULL_OUTPUT_PATH" exists, checking checksum
-		EXISTING_CHECKSUM=$(MD5SUM "$FULL_OUTPUT_PATH")
-		if [ "${EXISTING_CHECKSUM^^}" == "$CHECKSUM" ]
+		EXISTING_CHECKSUM=$(MD5SUM "$FULL_OUTPUT_PATH" | tr '[:lower:]' '[:upper:]')
+		if [ "${EXISTING_CHECKSUM}" == "$CHECKSUM" ]
 		then
 			$VERBOSE && echo "$FULL_OUTPUT_PATH" is already the latest version
 			continue
@@ -135,8 +135,8 @@ do
 
 	# verify downloaded file
 	echo verifying $FULL_OUTPUT_PATH
-	DOWNLOADED_CHECKSUM=$(MD5SUM "$FULL_OUTPUT_PATH")
-	if [ "${DOWNLOADED_CHECKSUM^^}" != "$CHECKSUM" ]
+	DOWNLOADED_CHECKSUM=$(MD5SUM "$FULL_OUTPUT_PATH" | tr '[:lower:]' '[:upper:]')
+	if [ "${DOWNLOADED_CHECKSUM}" != "$CHECKSUM" ]
 	then
 		echo warning: $FULL_OUTPUT_PATH checksum does not match index
 		echo warning: $FULL_OUTPUT_PATH checksum does not match index >> file_errors.txt
