@@ -168,7 +168,8 @@ do
 done < <(find "$OUTPUT_DIR" -type f)
 
 echo using warframe exe to pull in game caches
-echo this will take a while
+echo first run might take some time
+echo stdout and stderr are scrapped since it\'s known to slow down warframe exe, logs can be found at \<wine_prefix\>/drive_c/users/\<name\>/Local\ Settings/Application\ Data/Warframe/Preprocess.log
 if [ -z "$WINEEXE" ]
 then
 	WINEEXE=wine
@@ -176,5 +177,5 @@ fi
 
 (
 	cd "$OUTPUT_DIR"
-	$WINEEXE Warframe.x64.exe -silent -log:/Preprocess.log -graphicsDriver:dx11 -cluster:public -language:en -deferred:0 -applet:/EE/Types/Framework/ContentUpdate
+	$WINEEXE Warframe.x64.exe -silent -log:/Preprocess.log -graphicsDriver:dx11 -cluster:public -language:en -deferred:0 -applet:/EE/Types/Framework/ContentUpdate > /dev/null 2> /dev/null
 )
